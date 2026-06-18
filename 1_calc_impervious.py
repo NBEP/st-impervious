@@ -1,10 +1,10 @@
 # ---------------------------------------------------------------------------
-# 1_calc_landuse.py
+# 1_calc_impervious.py
 # Authors: Mariel Sorlien
-# Python 3.7
+# Python 3.11
 #
 # Description:
-# TEXT HERE
+# Calculates percent impervious cover at seven different geoscales.
 #
 # REQUIRES GIS/ARCPY
 # ---------------------------------------------------------------------------
@@ -19,40 +19,39 @@ arcpy.env.overwriteOutput = True
 
 # Set working directory, projection --------------------------------------------
 base_folder = Path.cwd().parents[2] / "Data"
-csv_folder = base_folder / "int_tabulardata" / "landuse_int"
-arcpy.env.workspace = str(base_folder / "int_gisdata" / "landuse_int")
+csv_folder = base_folder / "int_tabulardata" / "impervious_int"
+arcpy.env.workspace = str(base_folder / "int_gisdata" / "impervious_int")
 
 # Define INPUTS
-nlcd_year = 1985
-nlcd = "Annual_NLCD_LndCov_" + str(nlcd_year) + "_CU_C1V1.tif"
+nlcd_year = 2024
+nlcd = "Annual_NLCD_FctImp_" + str(nlcd_year) + "_CU_C1V1.tif"
 
-clip_boundaries = "landuse_int.gdb/geoscales/town_and_bay"
-colormap = Path.cwd() / "colormap.clr"
+clip_boundaries = "impervious_int.gdb/geoscales/town_and_bay"
 
-basins = "landuse_int.gdb/source_copy/BASINS_NBEP2017"
+basins = "impervious_int.gdb/geoscales/BASINS_NBEP2017"
 basins_field = "Basin"
 
-huc10 = "landuse_int.gdb/source_copy/HUC10_NBEP2017"
+huc10 = "impervious_int.gdb/geoscales/HUC10_NBEP2017"
 huc10_field = "HUC10_Name"
 
-huc12 = "landuse_int.gdb/source_copy/HUC12_NBEP2017"
+huc12 = "impervious_int.gdb/geoscales/HUC12_NBEP2017"
 huc12_field = "HUC12"  # Must include ID, since multiple HUC12 with same name
 
-studyarea = "landuse_int.gdb/source_copy/STUDYAREAS_NBEP2017"
+studyarea = "impervious_int.gdb/geoscales/STUDYAREAS_NBEP2017"
 studyarea_field = "Study_Area"
 
-state_studyarea = "landuse_int.gdb/geoscales/states_by_studyarea"
+state_studyarea = "impervious_int.gdb/geoscales/states_by_studyarea"
 state_field = "State_Area"  # Must include state AND study area
 
-town = "landuse_int.gdb/geoscales/town_and_bay"
+town = "impervious_int.gdb/geoscales/town_and_bay"
 town_field = "Town_State"  # Must include town AND state
 
-town_studyarea = "landuse_int.gdb/geoscales/towns_by_studyarea"
+town_studyarea = "impervious_int.gdb/geoscales/towns_by_studyarea"
 town_studyarea_field = "Town_Area"  # Must include town, state, AND study area
 
 # Define OUTPUTS
-nlcd_final = "landuse_int.gdb/NLCD_" + str(nlcd_year) + "_NBEP2026"
-csv_final = "NLCD_" + str(nlcd_year) + "_NBEP2026.csv"
+nlcd_final = "impervious_int.gdb/IMPERVIOUS_" + str(nlcd_year) + "_NBEP2026"
+csv_final = "IMPERVIOUS_" + str(nlcd_year) + "_NBEP2026.csv"
 
 # RUN SCRIPT ----------------------------------------------------------------------------------------------------------
 temp_buffer = arcpy.env.scratchFolder + "/temp_buffer.shp"
@@ -66,7 +65,7 @@ arcpy.env.snapRaster = nlcd
 print("Retrieving NLCD spatial reference")
 spatial_ref = arcpy.Describe(nlcd).spatialReference
 
-print("\nPROCESSING", nlcd_year, "NLCD DATA")
+print("\nPROCESSING", nlcd_year, "IMPERVIOUS DATA")
 print("Setting clip boundaries")
 print("\tAdding 30m buffer")
 arcpy.analysis.Buffer(
@@ -81,12 +80,11 @@ arcpy.management.Project(
     out_dataset=temp_clip,
     out_coor_system=spatial_ref
 )
-print("Formatting NLCD data")
-prep_raster.prep_nlcd(
-    in_features=nlcd,
-    out_features=temp_nlcd,
-    clip_boundaries=temp_clip,
-    colormap=str(colormap)
+print("Clipping to NBEP region")
+arcpy.management.Clip(
+    in_raster=nlcd,
+    in_template_dataset=temp_clip,
+    out_raster=temp_nlcd
 )
 
 print("\nCALCULATING AREA")
@@ -97,7 +95,7 @@ prep_raster.prep_geoscale(
     out_features=temp_raster,
     out_coor_system=spatial_ref
 )
-df_acres = calc_area.current_area(
+df_acres = calc_stats.calc_percent(
     in_geoscale=temp_raster,
     geoscale_field=basins_field,
     in_nlcd=temp_nlcd,
@@ -111,7 +109,7 @@ prep_raster.prep_geoscale(
     out_features=temp_raster,
     out_coor_system=spatial_ref
 )
-df_temp = calc_area.current_area(
+df_temp = calc_stats.calc_percent(
     in_geoscale=temp_raster,
     geoscale_field=huc10_field,
     in_nlcd=temp_nlcd,
@@ -126,7 +124,7 @@ prep_raster.prep_geoscale(
     out_features=temp_raster,
     out_coor_system=spatial_ref
 )
-df_temp = calc_area.current_area(
+df_temp = calc_stats.calc_percent(
     in_geoscale=temp_raster,
     geoscale_field=huc12_field,
     in_nlcd=temp_nlcd,
@@ -141,7 +139,7 @@ prep_raster.prep_geoscale(
     out_features=temp_raster,
     out_coor_system=spatial_ref
 )
-df_temp = calc_area.current_area(
+df_temp = calc_stats.calc_percent(
     in_geoscale=temp_raster,
     geoscale_field=studyarea_field,
     in_nlcd=temp_nlcd,
@@ -156,7 +154,7 @@ prep_raster.prep_geoscale(
     out_features=temp_raster,
     out_coor_system=spatial_ref
 )
-df_temp = calc_area.current_area(
+df_temp = calc_stats.calc_percent(
     in_geoscale=temp_raster,
     geoscale_field=state_field,
     in_nlcd=temp_nlcd,
@@ -171,7 +169,7 @@ prep_raster.prep_geoscale(
     out_features=temp_raster,
     out_coor_system=spatial_ref
 )
-df_temp = calc_area.current_area(
+df_temp = calc_stats.calc_percent(
     in_geoscale=temp_raster,
     geoscale_field=town_field,
     in_nlcd=temp_nlcd,
@@ -186,7 +184,7 @@ prep_raster.prep_geoscale(
     out_features=temp_raster,
     out_coor_system=spatial_ref
 )
-df_temp = calc_area.current_area(
+df_temp = calc_stats.calc_percent(
     in_geoscale=temp_raster,
     geoscale_field=town_studyarea_field,
     in_nlcd=temp_nlcd,
