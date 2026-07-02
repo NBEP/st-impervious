@@ -23,8 +23,8 @@ csv_folder = base_folder / "int_tabulardata" / "impervious_int"
 arcpy.env.workspace = str(base_folder / "int_gisdata" / "impervious_int")
 
 # Define INPUTS
-nlcd_year = 2024
-nlcd = "Annual_NLCD_FctImp_" + str(nlcd_year) + "_CU_C1V1.tif"
+nlcd_year = 2025
+nlcd = "Annual_NLCD_FctImp_" + str(nlcd_year) + "_CU_C1V2.tif"
 
 clip_boundaries = "impervious_int.gdb/geoscales/town_and_bay"
 

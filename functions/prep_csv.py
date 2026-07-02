@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def split_geoscale(in_df, geoscale, source_year, nbep_year, out_path, csv_prefix="NLCD_"):
+def split_geoscale(in_df, geoscale, source_year, nbep_year, out_path, csv_prefix="IMPERVIOUS_"):
     """
     split_geoscale() filters the input dataframe
 
@@ -10,7 +10,7 @@ def split_geoscale(in_df, geoscale, source_year, nbep_year, out_path, csv_prefix
     :param nbep_year: Integer. Current year.
     :param source_year: String or integer. Data source year.
     :param out_path: Path. Location to save output csv.
-    :param csv_prefix: String. Prefix to csv name. Default "NLCD_".
+    :param csv_prefix: String. Prefix to csv name. Default "IMPERVIOUS_".
     """
 
     print("\tFiltering data")
