@@ -23,8 +23,8 @@ csv_folder = base_folder / "int_tabulardata" / "impervious_int"
 arcpy.env.workspace = str(base_folder / "int_gisdata" / "impervious_int")
 
 # Define INPUTS
-nlcd_year = 2025
-nlcd = "Annual_NLCD_FctImp_" + str(nlcd_year) + "_CU_C1V2.tif"
+impervious_year = 2025
+impervious_raster = "Annual_NLCD_FctImp_" + str(impervious_year) + "_CU_C1V2.tif"
 
 clip_boundaries = "impervious_int.gdb/geoscales/town_and_bay"
 
@@ -50,22 +50,22 @@ town_studyarea = "impervious_int.gdb/geoscales/towns_by_studyarea"
 town_studyarea_field = "Town_Area"  # Must include town, state, AND study area
 
 # Define OUTPUTS
-nlcd_final = "impervious_int.gdb/IMPERVIOUS_" + str(nlcd_year) + "_NBEP2026"
-csv_final = "IMPERVIOUS_" + str(nlcd_year) + "_NBEP2026.csv"
+nlcd_final = "impervious_int.gdb/IMPERVIOUS_" + str(impervious_year) + "_NBEP2026"
+csv_final = "IMPERVIOUS_" + str(impervious_year) + "_NBEP2026.csv"
 
 # RUN SCRIPT ----------------------------------------------------------------------------------------------------------
 temp_buffer = arcpy.env.scratchFolder + "/temp_buffer.shp"
 temp_clip = arcpy.env.scratchFolder + "/temp_boundaries.shp"
-temp_nlcd = "temp_nlcd.tif"
+temp_impervious = "temp_impervious.tif"
 temp_raster = arcpy.env.scratchFolder + "/temp_raster.tif"
 
 print("\nSETTING DEFAULT VALUES")
 print("Setting snap raster")
-arcpy.env.snapRaster = nlcd
+arcpy.env.snapRaster = impervious_raster
 print("Retrieving NLCD spatial reference")
-spatial_ref = arcpy.Describe(nlcd).spatialReference
+spatial_ref = arcpy.Describe(impervious_raster).spatialReference
 
-print("\nPROCESSING", nlcd_year, "IMPERVIOUS DATA")
+print("\nPROCESSING", impervious_year, "IMPERVIOUS DATA")
 print("Setting clip boundaries")
 print("\tAdding 30m buffer")
 arcpy.analysis.Buffer(
@@ -80,115 +80,73 @@ arcpy.management.Project(
     out_dataset=temp_clip,
     out_coor_system=spatial_ref
 )
-print("Clipping to NBEP region")
+print("Clipping impervious cover")
 arcpy.management.Clip(
-    in_raster=nlcd,
+    in_raster=impervious_raster,
     in_template_dataset=temp_clip,
-    out_raster=temp_nlcd
+    out_raster=temp_impervious
 )
 
 print("\nCALCULATING AREA")
 print("Per basin")
-prep_raster.prep_geoscale(
-    in_features=basins,
-    in_field=basins_field,
-    out_features=temp_raster,
-    out_coor_system=spatial_ref
-)
 df_acres = calc_stats.calc_percent(
-    in_geoscale=temp_raster,
+    in_geoscale=basins,
     geoscale_field=basins_field,
-    in_nlcd=temp_nlcd,
-    nlcd_year=nlcd_year
+    in_raster=temp_impervious,
+    raster_year=impervious_year
 )
 
 print("Per HUC10")
-prep_raster.prep_geoscale(
-    in_features=huc10,
-    in_field=huc10_field,
-    out_features=temp_raster,
-    out_coor_system=spatial_ref
-)
 df_temp = calc_stats.calc_percent(
-    in_geoscale=temp_raster,
+    in_geoscale=huc10,
     geoscale_field=huc10_field,
-    in_nlcd=temp_nlcd,
-    nlcd_year=nlcd_year
+    in_raster=temp_impervious,
+    raster_year=impervious_year
 )
 df_acres = pd.concat([df_acres, df_temp])
 
 print("Per HUC12")
-prep_raster.prep_geoscale(
-    in_features=huc12,
-    in_field=huc12_field,
-    out_features=temp_raster,
-    out_coor_system=spatial_ref
-)
 df_temp = calc_stats.calc_percent(
-    in_geoscale=temp_raster,
+    in_geoscale=huc12,
     geoscale_field=huc12_field,
-    in_nlcd=temp_nlcd,
-    nlcd_year=nlcd_year
+    in_raster=temp_impervious,
+    raster_year=impervious_year
 )
 df_acres = pd.concat([df_acres, df_temp])
 
 print("Per study area")
-prep_raster.prep_geoscale(
-    in_features=studyarea,
-    in_field=studyarea_field,
-    out_features=temp_raster,
-    out_coor_system=spatial_ref
-)
 df_temp = calc_stats.calc_percent(
-    in_geoscale=temp_raster,
+    in_geoscale=studyarea,
     geoscale_field=studyarea_field,
-    in_nlcd=temp_nlcd,
-    nlcd_year=nlcd_year
+    in_raster=temp_impervious,
+    raster_year=impervious_year
 )
 df_acres = pd.concat([df_acres, df_temp])
 
 print("Per state per study area")
-prep_raster.prep_geoscale(
-    in_features=state_studyarea,
-    in_field=state_field,
-    out_features=temp_raster,
-    out_coor_system=spatial_ref
-)
 df_temp = calc_stats.calc_percent(
-    in_geoscale=temp_raster,
+    in_geoscale=state_studyarea,
     geoscale_field=state_field,
-    in_nlcd=temp_nlcd,
-    nlcd_year=nlcd_year
+    in_raster=temp_impervious,
+    raster_year=impervious_year
 )
 df_acres = pd.concat([df_acres, df_temp])
 
 print("Per town")
-prep_raster.prep_geoscale(
-    in_features=town,
-    in_field=town_field,
-    out_features=temp_raster,
-    out_coor_system=spatial_ref
-)
 df_temp = calc_stats.calc_percent(
-    in_geoscale=temp_raster,
+    in_geoscale=town,
     geoscale_field=town_field,
-    in_nlcd=temp_nlcd,
-    nlcd_year=nlcd_year
+    in_raster=temp_impervious,
+    raster_year=impervious_year
 )
 df_acres = pd.concat([df_acres, df_temp])
 
 print("Per town per study area")
-prep_raster.prep_geoscale(
-    in_features=town_studyarea,
-    in_field=town_studyarea_field,
-    out_features=temp_raster,
-    out_coor_system=spatial_ref
-)
 df_temp = calc_stats.calc_percent(
-    in_geoscale=temp_raster,
+    in_geoscale=town_studyarea,
     geoscale_field=town_studyarea_field,
-    in_nlcd=temp_nlcd,
-    nlcd_year=nlcd_year
+    in_raster=temp_impervious,
+    raster_year=impervious_year
 )
 df_acres = pd.concat([df_acres, df_temp])
 
@@ -199,7 +157,7 @@ df_acres.to_csv(csv_folder / csv_final)
 print("Saving raster")
 print("\tProjecting to UTM Zone 19N NAD 1983")
 arcpy.management.ProjectRaster(
-    in_raster=temp_nlcd,
+    in_raster=temp_impervious,
     out_raster=temp_raster,
     out_coor_system=arcpy.SpatialReference("NAD 1983 UTM Zone 19N")
 )
