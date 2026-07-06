@@ -32,7 +32,7 @@ basins = "impervious_int.gdb/geoscales/BASINS_NBEP2017"
 basins_field = "Basin"
 
 huc10 = "impervious_int.gdb/geoscales/HUC10_NBEP2017"
-huc10_field = "HUC10_Name"
+huc10_field = "HUC10"
 
 huc12 = "impervious_int.gdb/geoscales/HUC12_NBEP2017"
 huc12_field = "HUC12"  # Must include ID, since multiple HUC12 with same name
@@ -88,13 +88,22 @@ arcpy.management.Clip(
 )
 
 print("\nCALCULATING AREA")
-print("Per basin")
+print("Per study area")
 df_acres = calc_stats.calc_percent(
+    in_geoscale=studyarea,
+    geoscale_field=studyarea_field,
+    in_raster=temp_impervious,
+    raster_year=impervious_year
+)
+
+print("Per basin")
+df_temp = calc_stats.calc_percent(
     in_geoscale=basins,
     geoscale_field=basins_field,
     in_raster=temp_impervious,
     raster_year=impervious_year
 )
+df_acres = pd.concat([df_acres, df_temp])
 
 print("Per HUC10")
 df_temp = calc_stats.calc_percent(
@@ -102,6 +111,11 @@ df_temp = calc_stats.calc_percent(
     geoscale_field=huc10_field,
     in_raster=temp_impervious,
     raster_year=impervious_year
+)
+df_temp = prep_csv.add_huc_name(
+    df=df_temp,
+    huc_field=huc10_field,
+    ref_csv="data/HUC10.csv"
 )
 df_acres = pd.concat([df_acres, df_temp])
 
@@ -112,14 +126,10 @@ df_temp = calc_stats.calc_percent(
     in_raster=temp_impervious,
     raster_year=impervious_year
 )
-df_acres = pd.concat([df_acres, df_temp])
-
-print("Per study area")
-df_temp = calc_stats.calc_percent(
-    in_geoscale=studyarea,
-    geoscale_field=studyarea_field,
-    in_raster=temp_impervious,
-    raster_year=impervious_year
+df_temp = prep_csv.add_huc_name(
+    df=df_temp,
+    huc_field=huc12_field,
+    ref_csv="data/HUC12.csv"
 )
 df_acres = pd.concat([df_acres, df_temp])
 
@@ -130,6 +140,7 @@ df_temp = calc_stats.calc_percent(
     in_raster=temp_impervious,
     raster_year=impervious_year
 )
+df_temp[["State", "Study_Area"]] = df_temp["Geoscale_Name"].str.split("-", expand=True)
 df_acres = pd.concat([df_acres, df_temp])
 
 print("Per town")
@@ -139,6 +150,7 @@ df_temp = calc_stats.calc_percent(
     in_raster=temp_impervious,
     raster_year=impervious_year
 )
+df_temp[["Town", "State"]] = df_temp["Geoscale_Name"].str.split("-", expand=True)
 df_acres = pd.concat([df_acres, df_temp])
 
 print("Per town per study area")
@@ -148,7 +160,25 @@ df_temp = calc_stats.calc_percent(
     in_raster=temp_impervious,
     raster_year=impervious_year
 )
+df_temp[["Town", "State", "Study_Area"]] = df_temp["Geoscale_Name"].str.split("-", expand=True)
 df_acres = pd.concat([df_acres, df_temp])
+
+print("Updating columns")
+df_acres.replace(
+    to_replace={
+        "State": {
+            "CT": "Connecticut", "CONNECTICUT": "Connecticut",
+            "RI": "Rhode Island", "RHODE ISLAND": "Rhode Island",
+            "MA": "Massachusetts", "MASSACHUSETTS": "Massachusetts", "MASSACHUSSETTS": "Massachusetts"
+        }
+    },
+    inplace=True
+)
+df_acres = df_acres[[
+    "Geoscale", "Geoscale_Name", "Town", "State", "HUC10", "HUC10_Name", "HUC12", "HUC12_Name", "Study_Area", "Year",
+    "Acres_IC", "Percent_IC", "Total_Acres"
+]]
+
 
 print("\nDOWNLOADING FILES")
 print("Saving csv")

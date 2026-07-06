@@ -4,7 +4,7 @@
 # Python 3.7
 #
 # Description:
-# TEXT HERE
+# Combines annual impervious cover CSV files and outputs a separate CSV for each geoscale.
 #
 # REQUIRES GIS/ARCPY
 # ---------------------------------------------------------------------------
