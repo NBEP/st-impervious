@@ -24,7 +24,7 @@ in_csv = [
     "IMPERVIOUS_2015_NBEP2026.csv", "IMPERVIOUS_2020_NBEP2026.csv", "IMPERVIOUS_2025_NBEP2026.csv"
 ]
 group_col = "Geoscale_Name"
-sort_col = ["Geoscale", group_col, "Year"]
+sort_col = ["Geoscale", group_col, "HUC10", "HUC12", "Year"]
 
 source_year = 2026
 nbep_year = 2026

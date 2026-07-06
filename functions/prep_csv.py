@@ -36,6 +36,9 @@ def split_geoscale(in_df, geoscale, source_year, nbep_year, out_path, csv_prefix
     df = in_df.copy()
     df = df[df["Geoscale"] == geoscale]
 
+    print("\tDropping empty columns")
+    df.dropna(how='all', axis=1, inplace=True)
+
     print("\tAdding metadata columns")
     df["Data_Source"] = "NLCD"
     df["Source_Year"] = source_year
