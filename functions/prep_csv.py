@@ -40,7 +40,7 @@ def split_geoscale(in_df, geoscale, source_year, nbep_year, out_path, csv_prefix
     df.dropna(how='all', axis=1, inplace=True)
 
     print("\tAdding metadata columns")
-    df["Data_Source"] = "NLCD"
+    df["Data_Source"] = "USGS NLCD"
     df["Source_Year"] = source_year
     df["NBEP_Year"] = nbep_year
 

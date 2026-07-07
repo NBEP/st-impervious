@@ -20,6 +20,7 @@ base_folder = Path.cwd().parents[2] / "Data" / "int_tabulardata" / "impervious_i
 
 # Define variables
 in_csv = [
+    "IMPERVIOUS_1985_NBEP2026.csv", "IMPERVIOUS_1990_NBEP2026.csv", "IMPERVIOUS_1995_NBEP2026.csv",
     "IMPERVIOUS_2000_NBEP2026.csv", "IMPERVIOUS_2005_NBEP2026.csv", "IMPERVIOUS_2010_NBEP2026.csv",
     "IMPERVIOUS_2015_NBEP2026.csv", "IMPERVIOUS_2020_NBEP2026.csv", "IMPERVIOUS_2025_NBEP2026.csv"
 ]
