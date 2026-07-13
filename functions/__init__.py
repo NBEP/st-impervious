@@ -6,4 +6,4 @@ import pandas as pd
 arcpy.CheckOutExtension("3D")
 arcpy.CheckOutExtension("spatial")
 
-__all__ = ["calc_stats", "prep_csv"]
+__all__ = ["update_field", "calc_stats", "prep_csv"]

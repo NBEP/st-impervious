@@ -12,9 +12,9 @@ def calc_percent(in_geoscale, geoscale_field, in_raster, raster_year):
     :param in_raster: Path and file name for impervious cover raster.
     :param raster_year: Integer. Source year for impervious cover data.
     """
-    out_table = arcpy.env.scratchFolder + "/temp_table.dbf"
-    geo_copy = arcpy.env.scratchFolder + "/temp_shp.shp"
-    geo_table = arcpy.env.scratchFolder + "/temp_geotable.dbf"
+    out_table = arcpy.env.scratchFolder + "/temp_fun_table.dbf"
+    geo_copy = arcpy.env.scratchFolder + "/temp_fun_shp.shp"
+    geo_table = arcpy.env.scratchFolder + "/temp_fun_geotable.dbf"
 
     print("\tCalculating percent impervious cover")
     arcpy.sa.ZonalStatisticsAsTable(
@@ -46,7 +46,7 @@ def calc_percent(in_geoscale, geoscale_field, in_raster, raster_year):
     )
     arcpy.management.CalculateGeometryAttributes(
         in_features=geo_copy,
-        geometry_property=[["temp_area", "AREA"]],
+        geometry_property=[["temp_area", "AREA_GEODESIC"]],
         area_unit="ACRES"
     )
     print("\tConverting to dataframe")
@@ -71,5 +71,8 @@ def calc_percent(in_geoscale, geoscale_field, in_raster, raster_year):
     df["Year"] = raster_year
     df["Acres_IC"] = df["Total_Acres"] * df["Percent_IC"] / 100
     df = df[["Geoscale", "Geoscale_Name", "Year", "Percent_IC", "Acres_IC", "Total_Acres"]]
+
+    # Clean up
+    arcpy.management.Delete([out_table, geo_copy, geo_table])
 
     return df
