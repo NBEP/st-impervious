@@ -30,10 +30,10 @@ impervious_raster = "Annual_NLCD_FctImp_" + str(impervious_year) + "_CU_C1V2.tif
 # Download from https://narragansett-bay-estuary-program-nbep.hub.arcgis.com/
 geoscale_folder = base_folder / "int_gisdata" / "geoscale_int" / "geoscale_int.gdb"
 
+studyarea = str(geoscale_folder / "STUDYAREAS_NBEP2017")
 basins = str(geoscale_folder / "BASINS_NBEP2017")
 huc10 = str(geoscale_folder / "HUC10_NBEP2017")
 huc12 = str(geoscale_folder / "HUC12_NBEP2017")
-studyarea = str(geoscale_folder / "STUDYAREAS_NBEP2017")
 state_studyarea = str(geoscale_folder / "STATES_ByStudyArea_NBEP2017")
 town = str(geoscale_folder / "TOWNS_NBEP2017")
 town_studyarea = str(geoscale_folder / "TOWNS_ByStudyArea_NBEP2017")
