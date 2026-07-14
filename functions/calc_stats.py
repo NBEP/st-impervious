@@ -32,7 +32,7 @@ def calc_percent(in_geoscale, geoscale_field, in_raster, raster_year):
     )
     df = pd.DataFrame(df)
     df = df[[geoscale_field, "MEAN"]]
-    df.rename(columns={"MEAN": "Percent_IC"}, inplace=True)
+    df.rename(columns={"MEAN": "Percent_Impervious"}, inplace=True)
 
     print("\tCalculating area (acres)")
     arcpy.management.CopyFeatures(
@@ -60,7 +60,7 @@ def calc_percent(in_geoscale, geoscale_field, in_raster, raster_year):
     )
     df_acre = pd.DataFrame(df_acre)
     df_acre = df_acre[[geoscale_field, "temp_area"]]  # Drop extra columns
-    df_acre.rename(columns={"temp_area": "Total_Acres"}, inplace=True)
+    df_acre.rename(columns={"temp_area": "Acres_Total"}, inplace=True)
 
     print("\tMerging dataframes")
     df = df.join(df_acre.set_index(geoscale_field), on=geoscale_field)
@@ -69,8 +69,8 @@ def calc_percent(in_geoscale, geoscale_field, in_raster, raster_year):
     df["Geoscale"] = geoscale_field
     df["Geoscale_Name"] = df[geoscale_field]
     df["Year"] = raster_year
-    df["Acres_IC"] = df["Total_Acres"] * df["Percent_IC"] / 100
-    df = df[["Geoscale", "Geoscale_Name", "Year", "Percent_IC", "Acres_IC", "Total_Acres"]]
+    df["Acres_Impervious"] = df["Acres_Total"] * df["Percent_Impervious"] / 100
+    df = df[["Geoscale", "Geoscale_Name", "Year", "Acres_Impervious", "Percent_Impervious", "Acres_Total"]]
 
     # Clean up
     arcpy.management.Delete([out_table, geo_copy, geo_table])

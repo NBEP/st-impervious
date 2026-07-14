@@ -24,8 +24,6 @@ in_csv = [
     "IMPERVIOUS_2000_NBEP2026.csv", "IMPERVIOUS_2005_NBEP2026.csv", "IMPERVIOUS_2010_NBEP2026.csv",
     "IMPERVIOUS_2015_NBEP2026.csv", "IMPERVIOUS_2020_NBEP2026.csv", "IMPERVIOUS_2025_NBEP2026.csv"
 ]
-group_col = "Geoscale_Name"
-sort_col = ["Geoscale", group_col, "HUC10", "HUC12", "Year"]
 
 source_year = 2026
 nbep_year = 2026
@@ -34,9 +32,6 @@ nbep_year = 2026
 out_csv = base_folder / "IMPERVIOUS_change_2000_2025_NBEP2026.csv"
 
 # RUN SCRIPT ----------------------------------------------------------------------------------------------------------
-if "Year" not in sort_col:
-    sort_col.append("Year")
-
 print("\nIMPORTING DATA")
 df = pd.DataFrame()
 for csv in in_csv:
@@ -44,7 +39,8 @@ for csv in in_csv:
     temp_csv = base_folder / csv
     df_temp = pd.read_csv(temp_csv)
     df = pd.concat([df, df_temp])
-print("Sorting data by", sort_col)
+print("Sorting data by location, year")
+sort_col = ["Geoscale", "Geoscale_Name", "HUC12", "HUC10", "Basins", "Study_Area", "Year"]
 df.sort_values(by=sort_col, inplace=True)
 df.reset_index(drop=True, inplace=True)
 

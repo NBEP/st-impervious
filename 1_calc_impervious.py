@@ -92,13 +92,19 @@ df_acres = calc_stats.calc_percent(
     in_raster=temp_impervious,
     raster_year=impervious_year
 )
+df_acres.rename(columns={"Geoscale_Name": "Study_Area"}, inplace=True)
 
 print("Per basin")
 df_temp = calc_stats.calc_percent(
     in_geoscale=basins,
-    geoscale_field="Basin",
+    geoscale_field="Basins",
     in_raster=temp_impervious,
     raster_year=impervious_year
+)
+df_temp = prep_csv.add_study_area(
+    df=df_temp,
+    geoscale_field="Basins",
+    ref_csv="data/basin.csv"
 )
 df_acres = pd.concat([df_acres, df_temp])
 
@@ -109,9 +115,9 @@ df_temp = calc_stats.calc_percent(
     in_raster=temp_impervious,
     raster_year=impervious_year
 )
-df_temp = prep_csv.add_huc_name(
+df_temp = prep_csv.add_study_area(
     df=df_temp,
-    huc_field="HUC10",
+    geoscale_field="HUC10",
     ref_csv="data/HUC10.csv"
 )
 df_acres = pd.concat([df_acres, df_temp])
@@ -123,9 +129,9 @@ df_temp = calc_stats.calc_percent(
     in_raster=temp_impervious,
     raster_year=impervious_year
 )
-df_temp = prep_csv.add_huc_name(
+df_temp = prep_csv.add_study_area(
     df=df_temp,
-    huc_field="HUC12",
+    geoscale_field="HUC12",
     ref_csv="data/HUC12.csv"
 )
 df_acres = pd.concat([df_acres, df_temp])
@@ -190,14 +196,13 @@ df_acres.replace(
     inplace=True
 )
 df_acres = df_acres[[
-    "Geoscale", "Geoscale_Name", "Town", "State", "HUC10", "HUC10_Name", "HUC12", "HUC12_Name", "Study_Area", "Year",
-    "Acres_IC", "Percent_IC", "Total_Acres"
+    "Geoscale", "Geoscale_Name", "Town", "State", "HUC10", "HUC10_Name", "HUC12", "HUC12_Name", "Basins", "Study_Area",
+    "Year", "Percent_Impervious", "Acres_Impervious", "Acres_Total"
 ]]
-
 
 print("\nDOWNLOADING FILES")
 print("Saving csv")
-df_acres.to_csv(csv_folder / csv_final)
+df_acres.to_csv(csv_folder / csv_final, index=False)
 
 print("Saving raster")
 print("\tProjecting to UTM Zone 19N NAD 1983")
