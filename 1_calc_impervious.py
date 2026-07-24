@@ -208,15 +208,8 @@ print("Saving raster")
 print("\tProjecting to UTM Zone 19N NAD 1983")
 arcpy.management.ProjectRaster(
     in_raster=temp_impervious,
-    out_raster=temp_raster,
-    out_coor_system=arcpy.SpatialReference("NAD 1983 UTM Zone 19N")
-)
-print("\tClipping data")
-arcpy.management.Clip(
-    in_raster=temp_raster,
     out_raster=nlcd_final,
-    in_template_dataset=temp_buffer,
-    clipping_geometry="ClippingGeometry"
+    out_coor_system=arcpy.SpatialReference("NAD 1983 UTM Zone 19N")
 )
 
 print("\nCLEARING SCRATCH FOLDER")

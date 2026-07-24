@@ -9,15 +9,15 @@ Python scripts used to process and analyze fractional impervious surface data fo
 Calculates percent impervious cover at seven different geoscales. Run once per fractional impervious surface dataset.
 
 #### Data Sources
-* [Annual NLCD Fractional Impervious Surface](https://www.usgs.gov/centers/eros/science/annual-nlcd-fractional-impervious-surface), series 1, USGS 
-* [NBEP Study Areas](https://narragansett-bay-estuary-program-nbep.hub.arcgis.com/datasets/73cc1e5845c247e2959ac141f9b8c4b5_0/explore?location=41.835903%2C-71.334937%2C9), NBEP
-* [Major River Basin Boundaries](https://narragansett-bay-estuary-program-nbep.hub.arcgis.com/datasets/218fdc6c542d46f8bb111c82e7548a5e_0/explore?location=41.835903%2C-71.334937%2C9), NBEP
-* [HUC10](https://narragansett-bay-estuary-program-nbep.hub.arcgis.com/datasets/5210cd11b74f411fb41a6619bfd4a4cd_0/explore?location=41.835903%2C-71.334937%2C9), NBEP
-* [HUC12](https://narragansett-bay-estuary-program-nbep.hub.arcgis.com/datasets/5305bb874b994a7e923e6cdfebc8943f_0/explore?location=41.835903%2C-71.334937%2C9), NBEP
-* [NBEP Study Areas with State Boundaries](https://narragansett-bay-estuary-program-nbep.hub.arcgis.com/datasets/a311a1c484f64318a6c50235420a0ea5_0/explore?location=41.835903%2C-71.334937%2C9), NBEP
-* [Town Boundaries](https://narragansett-bay-estuary-program-nbep.hub.arcgis.com/datasets/e9613c4c7cb04f8e933aed4ca06a2b25_0/explore?location=41.878702%2C-71.267013%2C9), NBEP
-* [Study Areas with Town Boundaries](https://narragansett-bay-estuary-program-nbep.hub.arcgis.com/datasets/d70caca7abd74e78a23d6942d0fb4ed1_0/explore?location=41.835903%2C-71.334937%2C9), NBEP
-* [Bays](https://narragansett-bay-estuary-program-nbep.hub.arcgis.com/datasets/2dec09e1b4d74feab9a2c0e30bf8722b_0/explore?location=41.606530%2C-71.478778%2C10), NBEP
+* [Annual NLCD Fractional Impervious Surface](https://www.usgs.gov/centers/eros/science/annual-nlcd-fractional-impervious-surface), series 1, USGS 2026
+* [NBEP Study Areas](https://narragansett-bay-estuary-program-nbep.hub.arcgis.com/datasets/73cc1e5845c247e2959ac141f9b8c4b5_0/explore?location=41.835903%2C-71.334937%2C9), NBEP 2017
+* [Major River Basin Boundaries](https://narragansett-bay-estuary-program-nbep.hub.arcgis.com/datasets/218fdc6c542d46f8bb111c82e7548a5e_0/explore?location=41.835903%2C-71.334937%2C9), NBEP 2017
+* [HUC10](https://narragansett-bay-estuary-program-nbep.hub.arcgis.com/datasets/5210cd11b74f411fb41a6619bfd4a4cd_0/explore?location=41.835903%2C-71.334937%2C9), NBEP 2017
+* [HUC12](https://narragansett-bay-estuary-program-nbep.hub.arcgis.com/datasets/5305bb874b994a7e923e6cdfebc8943f_0/explore?location=41.835903%2C-71.334937%2C9), NBEP 2017
+* [NBEP Study Areas with State Boundaries](https://narragansett-bay-estuary-program-nbep.hub.arcgis.com/datasets/a311a1c484f64318a6c50235420a0ea5_0/explore?location=41.835903%2C-71.334937%2C9), NBEP 2017
+* [Town Boundaries](https://narragansett-bay-estuary-program-nbep.hub.arcgis.com/datasets/e9613c4c7cb04f8e933aed4ca06a2b25_0/explore?location=41.878702%2C-71.267013%2C9), NBEP 2017
+* [Study Areas with Town Boundaries](https://narragansett-bay-estuary-program-nbep.hub.arcgis.com/datasets/d70caca7abd74e78a23d6942d0fb4ed1_0/explore?location=41.835903%2C-71.334937%2C9), NBEP 2017
+* [Bays](https://narragansett-bay-estuary-program-nbep.hub.arcgis.com/datasets/2dec09e1b4d74feab9a2c0e30bf8722b_0/explore?location=41.606530%2C-71.478778%2C10), NBEP 2017
 
 #### Outputs
 * 1 raster
