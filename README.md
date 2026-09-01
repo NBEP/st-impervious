@@ -1,6 +1,6 @@
 # Fractional Impervious Surface
 
-Python scripts used to process and analyze fractional impervious surface data for the [Narragansett Bay Estuary Program](https://www.nbep.org/)'s 2026 Status and Trends report. 
+Python scripts used to process and analyze fractional impervious surface data for the [Narragansett Bay Estuary Program](https://www.nbep.org/)'s 2027 State of the Waterways report. 
 
 ## Scripts
 
